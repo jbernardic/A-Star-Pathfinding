@@ -1,6 +1,6 @@
-class DrawableNode extends PathNode {
-    constructor(gridX, gridY, width, height, color) {
-        super(gridX, gridY);
+class DrawableNode extends Node {
+    constructor(gridX, gridY, width, height, color, collision=false) {
+        super(gridX, gridY, collision);
         this.x = gridX*48;
         this.y = gridY*48;
         this.width = width;
@@ -8,9 +8,9 @@ class DrawableNode extends PathNode {
         this.color = color;
         drawables.push(this);
     }
-    setPos(x, y){
-        this.gridX = x;
-        this.gridY = y;
+    setPos(pos){
+        this.gridX = pos.gridX;
+        this.gridY = pos.gridY;
         this.x = this.gridX*48;
         this.y = this.gridY*48;
     }
