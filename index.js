@@ -12,7 +12,8 @@ let nodeGrid = Array.from(Array(Math.round(canvas.offsetWidth/48)), (_, x) => ne
 //Define start and end node
 let startNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)-1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "green");
 let endNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)+1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "red");
-function clear(){
+
+function clearPath(){
     drawablePaths = []; //drawing.js
     drawableNodes.length = 2;
     
@@ -24,9 +25,7 @@ function clear(){
             }
         }
     }
-    
 }
-clear();
 
 startBtn.style.left = startNode.x*48-48*2 + "px";
 clearBtn.style.left = startNode.x*48+48*2 + "px";
@@ -45,7 +44,12 @@ document.addEventListener("mousedown", e => {
     if(inCanvas(e)){
         clickedNode = nodeGrid[Math.floor(e.x/48)][Math.floor(e.y/48)];
         if(!clickedNode.equals(startNode) && !clickedNode.equals(endNode)){
-            nodeGrid[clickedNode.x][clickedNode.y] = new DrawableNode(clickedNode.getPos().x, clickedNode.getPos().y, 48, 48, "gray", true);
+            if(e.which != 3) nodeGrid[clickedNode.x][clickedNode.y] = new DrawableNode(clickedNode.x, clickedNode.y, 48, 48, "gray", true);
+            else{
+                //remove walls on right click
+                drawableWalls = drawableWalls.filter(n => !n.equals(clickedNode));
+                nodeGrid[clickedNode.x][clickedNode.y] = new Node(clickedNode.x, clickedNode.y);
+            }  
         }
     }
 });
@@ -57,6 +61,16 @@ document.addEventListener("mousemove", e=> {
     if(clickedNode != null && inCanvas(e)){
         let mouseNode = nodeGrid[Math.floor(e.x/48)][Math.floor(e.y/48)];
         if(mouseNode == undefined) return;
+
+        //Remove walls on right click
+        if(e.which == 3){
+            if(drawableWalls.findIndex(n => n.equals(mouseNode)) > -1){
+                drawableWalls = drawableWalls.filter(n => !n.equals(mouseNode));
+                nodeGrid[mouseNode.x][mouseNode.y] = new Node(mouseNode.x, mouseNode.y);
+            }
+            return;
+        }
+
         if(mouseNode.equals(clickedNode) || mouseNode.equals(startNode) || mouseNode.equals(endNode) || mouseNode.collision == true) return;
         if(!clickedNode.equals(startNode) && !clickedNode.equals(endNode)){
             nodeGrid[mouseNode.x][mouseNode.y] = new DrawableNode(mouseNode.x, mouseNode.y, 48, 48, "gray", true);
@@ -74,7 +88,7 @@ document.addEventListener("mousemove", e=> {
 });
 
 startBtn.addEventListener("click", e => {
-    clear();
+    clearPath();
     let path = getPath(nodeGrid, startNode, endNode);
     new DrawablePath(path.path, "yellow");
     for(let i = 0; i<path.closed.length; i++){
@@ -88,6 +102,10 @@ startBtn.addEventListener("click", e => {
 });
 
 clearBtn.addEventListener("click", e=> {
-    clear();
+    nodeGrid = Array.from(Array(Math.round(canvas.offsetWidth/48)), (_, x) => new Array(Math.round(canvas.offsetHeight/48)).fill().map((_, y) =>{
+        return new Node(x, y); }));
+    drawablePaths = []; //drawing.js
+    drawableWalls = [];
+    drawableNodes.length = 2;
 })
 
