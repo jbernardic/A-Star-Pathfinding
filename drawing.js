@@ -12,7 +12,16 @@ class DrawableNode extends Node {
     }
 }
 
+class DrawablePath {
+    constructor(nodes, color){
+        this.nodes = nodes;
+        this.color = color;
+        drawablePaths.push(this);
+    }
+}
+
 const drawables = [];
+const drawablePaths = [];
 
 function draw(){
     //Canvas background
@@ -33,6 +42,19 @@ function draw(){
     }
     for(let i = 0; i<window.innerHeight; i+=48){
         ctx.fillRect(0, i, canvas.offsetWidth, 1);
+    }
+
+    //Path
+    for(let i = 0; i<drawablePaths.length; i++){
+        let path = drawablePaths[i];
+        ctx.strokeStyle = path.color;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        for(let n = 0; n<path.nodes.length-1; n++){
+            ctx.moveTo(path.nodes[n].x*48+24, path.nodes[n].y*48+24);
+            ctx.lineTo(path.nodes[n+1].x*48+24, path.nodes[n+1].y*48+24)
+            ctx.stroke();
+        }
     }
 }
 self.setInterval(draw, 30);

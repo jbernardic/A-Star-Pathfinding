@@ -68,10 +68,7 @@ document.addEventListener("mousemove", e=> {
 
 startBtn.addEventListener("click", e => {
     let path = getPath(nodeGrid, startNode, endNode);
-    for(let i = 0; i<path.path.length; i++){
-        let pathNode = path.path[i];
-        new DrawableNode(pathNode.x, pathNode.y, 48, 48, "yellow", false);
-    }
+    new DrawablePath(path.path, "yellow");
     for(let i = 0; i<path.closed.length; i++){
         let closed = path.closed[i];
         new DrawableNode(closed.x, closed.y, 48, 48, "#85bcf2", false);

@@ -63,6 +63,7 @@ function getPath(nodeGrid, startNode, endNode){
         //End
         if(current.equals(endNode)){
             let node = closed[closed.length-1];
+            path.push(node);
             while(node.parent != null){
                 node = node.parent;
                 path.push(node);
