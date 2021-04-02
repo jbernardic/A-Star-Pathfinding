@@ -82,6 +82,11 @@ function getNeighbours(node, nodeGrid){
     for(let x = -1; x<=1; x++){
         for(let y = -1; y<=1; y++){
             if(x==0 && y==0 || node.x+x < 0 || node.y+y < 0 || node.x+x >= nodeGrid.length || node.y+y >= nodeGrid[node.x+x].length) continue;
+            if((x > 0 || x < 0) && !document.getElementById("diagonal").checked){
+                if(y > 0 || y < 0){
+                    continue;
+                }
+            }
             neighbours.push(nodeGrid[node.x+x][node.y+y]);
         }
     }

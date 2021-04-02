@@ -12,9 +12,13 @@ body{
     font-size: 16px;
     position: absolute;
     top: 76%;
-    border: 1px solid gray;
 }
 
 #clear_btn{
     background-color:darkgray;
+}
+
+.options{
+    margin-left: 75%;
+    margin-top: 2%;
 }
