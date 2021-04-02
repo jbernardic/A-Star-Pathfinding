@@ -1,18 +1,28 @@
 const canvas = document.getElementById("canvas");
 const startBtn = document.getElementById("start_btn");
+const clearBtn = document.getElementById("clear_btn");
 const ctx = canvas.getContext("2d");
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight * 0.75;
 
-//Define starting and ending points
 let startNode;
 let endNode;
+let nodeGrid;
 function setup(){
+    drawablePaths = []; //drawing.js
+    drawables = [];
+    //Define starting and ending points
     startNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)-1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "green");
     endNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)+1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "red");
+    //Create a grid
+    nodeGrid = Array.from(Array(Math.round(canvas.offsetWidth/48)), (_, x) => new Array(Math.round(canvas.offsetHeight/48)).fill().map((_, y) =>{
+        return new Node(x, y);
+    }));
 }
 setup();
-startBtn.style.left = startNode.x*48 + "px";
+
+startBtn.style.left = startNode.x*48-48*2 + "px";
+clearBtn.style.left = startNode.x*48+48*2 + "px";
 let walls = []
 
 const inCanvas = (e) => e.x < canvas.offsetWidth && e.y < canvas.offsetHeight;
@@ -23,22 +33,13 @@ document.addEventListener("contextmenu", e => {
     }
 });
 
-//Creating nodeGrid
-
-const nodeArray = [];
-const nodeGrid = Array.from(Array(Math.round(canvas.offsetWidth/48)), (_, x) => new Array(Math.round(canvas.offsetHeight/48)).fill().map((_, y) =>{
-    let node = new Node(x, y);
-    nodeArray.push(node);
-    return node;
-}));
-
 //Check if holding click
 let clickedNode = null;
 document.addEventListener("mousedown", e => {
     if(inCanvas(e)){
         clickedNode = nodeGrid[Math.floor(e.x/48)][Math.floor(e.y/48)];
         if(!clickedNode.equals(startNode) && !clickedNode.equals(endNode)){
-            nodeGrid[clickedNode.x][clickedNode.y] = new DrawableNode(clickedNode.getPos().x, clickedNode.getPos().y, 48, 48, "black", true);
+            nodeGrid[clickedNode.x][clickedNode.y] = new DrawableNode(clickedNode.getPos().x, clickedNode.getPos().y, 48, 48, "gray", true);
         }
     }
 });
@@ -52,7 +53,7 @@ document.addEventListener("mousemove", e=> {
         if(mouseNode == undefined) return;
         if(mouseNode.equals(clickedNode) || mouseNode.equals(startNode) || mouseNode.equals(endNode) || mouseNode.collision == true) return;
         if(!clickedNode.equals(startNode) && !clickedNode.equals(endNode)){
-            nodeGrid[mouseNode.x][mouseNode.y] = new DrawableNode(mouseNode.x, mouseNode.y, 48, 48, "black", true);
+            nodeGrid[mouseNode.x][mouseNode.y] = new DrawableNode(mouseNode.x, mouseNode.y, 48, 48, "gray", true);
             clickedNode = mouseNode;
         }
         if(clickedNode.equals(startNode)){
@@ -78,4 +79,8 @@ startBtn.addEventListener("click", e => {
         new DrawableNode(opened.x, opened.y, 48, 48, "#bdffce", false);
     }
 });
+
+clearBtn.addEventListener("click", e=> {
+    setup();
+})
 

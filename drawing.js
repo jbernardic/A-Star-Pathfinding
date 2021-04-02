@@ -14,14 +14,17 @@ class DrawableNode extends Node {
 
 class DrawablePath {
     constructor(nodes, color){
-        this.nodes = nodes;
+        this.nodes = [];
+        for(let i = 0; i<nodes.length; i++){
+            this.nodes.push({"x": nodes[i].x, "y": nodes[i].y});
+        }
         this.color = color;
         drawablePaths.push(this);
     }
 }
 
-const drawables = [];
-const drawablePaths = [];
+let drawables = [];
+let drawablePaths = [];
 
 function draw(){
     //Canvas background
