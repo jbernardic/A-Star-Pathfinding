@@ -4,7 +4,9 @@ class DrawableNode extends Node {
         this.width = width;
         this.height = height;
         this.color = color;
-        drawables.push(this);
+        if(!collision){
+            drawableNodes.push(this)
+        } else drawableWalls.push(this);
     }
     setPos(pos){
         this.x = pos.x;
@@ -23,7 +25,8 @@ class DrawablePath {
     }
 }
 
-let drawables = [];
+let drawableNodes = [];
+let drawableWalls = [];
 let drawablePaths = [];
 
 function draw(){
@@ -31,11 +34,18 @@ function draw(){
     ctx.fillStyle = "#e8e8e8";
     ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
 
-    //Objects
-    for(let i = drawables.length-1; i>=0; i--){
-        let drawable = drawables[i];
-        ctx.fillStyle = drawable.color;
-        ctx.fillRect(drawable.x*48, drawable.y*48, drawable.width, drawable.height);
+    //drawableNodes (opened and closed nodes)
+    for(let i = drawableNodes.length-1; i>=0; i--){
+        let node = drawableNodes[i];
+        ctx.fillStyle = node.color;
+        ctx.fillRect(node.x*48, node.y*48, node.width, node.height);
+    }
+
+    //drawableWalls
+    for(let i = drawableWalls.length-1; i>=0; i--){
+        let wall = drawableWalls[i];
+        ctx.fillStyle = wall.color;
+        ctx.fillRect(wall.x*48, wall.y*48, wall.width, wall.height);
     }
 
     //Grid
@@ -58,6 +68,7 @@ function draw(){
             ctx.lineTo(path.nodes[n+1].x*48+24, path.nodes[n+1].y*48+24)
             ctx.stroke();
         }
+        ctx.closePath();
     }
 }
 self.setInterval(draw, 30);

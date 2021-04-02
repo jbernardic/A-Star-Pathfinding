@@ -5,25 +5,31 @@ const ctx = canvas.getContext("2d");
 ctx.canvas.width  = window.innerWidth;
 ctx.canvas.height = window.innerHeight * 0.75;
 
-let startNode;
-let endNode;
-let nodeGrid;
-function setup(){
+//Create a grid
+let nodeGrid = Array.from(Array(Math.round(canvas.offsetWidth/48)), (_, x) => new Array(Math.round(canvas.offsetHeight/48)).fill().map((_, y) =>{
+    return new Node(x, y); }));
+
+//Define start and end node
+let startNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)-1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "green");
+let endNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)+1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "red");
+function clear(){
     drawablePaths = []; //drawing.js
-    drawables = [];
-    //Define starting and ending points
-    startNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)-1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "green");
-    endNode = new DrawableNode(Math.floor(canvas.offsetWidth/2/48)+1, Math.floor(canvas.offsetHeight/2/48), 48, 48, "red");
-    //Create a grid
-    nodeGrid = Array.from(Array(Math.round(canvas.offsetWidth/48)), (_, x) => new Array(Math.round(canvas.offsetHeight/48)).fill().map((_, y) =>{
-        return new Node(x, y);
-    }));
+    drawableNodes.length = 2;
+    
+    //clear everything except walls
+    for(let x = 0; x<nodeGrid.length; x++){
+        for(let y = 0; y<nodeGrid[x].length; y++){
+            if(nodeGrid[x][y].collision == false){
+                nodeGrid[x][y] = new Node(x, y);
+            }
+        }
+    }
+    
 }
-setup();
+clear();
 
 startBtn.style.left = startNode.x*48-48*2 + "px";
 clearBtn.style.left = startNode.x*48+48*2 + "px";
-let walls = []
 
 const inCanvas = (e) => e.x < canvas.offsetWidth && e.y < canvas.offsetHeight;
 document.addEventListener("contextmenu", e => {
@@ -68,6 +74,7 @@ document.addEventListener("mousemove", e=> {
 });
 
 startBtn.addEventListener("click", e => {
+    clear();
     let path = getPath(nodeGrid, startNode, endNode);
     new DrawablePath(path.path, "yellow");
     for(let i = 0; i<path.closed.length; i++){
@@ -81,6 +88,6 @@ startBtn.addEventListener("click", e => {
 });
 
 clearBtn.addEventListener("click", e=> {
-    setup();
+    clear();
 })
 
