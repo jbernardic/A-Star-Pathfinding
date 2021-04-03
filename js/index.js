@@ -102,7 +102,7 @@ startBtn.addEventListener("click", e => {
 });
 
 clearBtn.addEventListener("click", e=> {
-    nodeGrid = Array.from(Array(Math.round(canvas.offsetWidth/48)), (_, x) => new Array(Math.round(canvas.offsetHeight/48)).fill().map((_, y) =>{
+    nodeGrid = Array.from(Array(Math.ceil(canvas.offsetWidth/48)), (_, x) => new Array(Math.ceil(canvas.offsetHeight/48)).fill().map((_, y) =>{
         return new Node(x, y); }));
     drawablePaths = []; //drawing.js
     drawableWalls = [];
